@@ -14,7 +14,8 @@ func (s *Server) Paystack() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		transactions, err := s.TransactionsService.CreateTransactions(paymentRequest)
+		user := models.User{}
+		transactions, err := s.TransactionsService.CreateTransactions(paymentRequest, user)
 		if err != nil {
 			response.JSON(c, "", http.StatusBadRequest, nil, err)
 			return

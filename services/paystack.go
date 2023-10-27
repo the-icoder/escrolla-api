@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-var apiKey = "sk_test_b748a89ad84f35c2f1a8b81681f956274de048bb"
+var apiKey = "sk_test_04f212ad5ac8b0674ac970eb31fa2cd9473b3105"
 var escrowFeePercentage = 2 // Your escrow fee percentage
 type transactionsService struct {
 	Config           *config.Config
@@ -27,10 +27,10 @@ func NewTransactionsService(transactionsRepo db.TransactionsRepo, conf *config.C
 }
 
 type TransactionsService interface {
-	CreateTransactions(paymentRequest models.PaymentRequest) (*models.Transaction, error)
+	CreateTransactions(paymentRequest models.PaymentRequest, user models.User) (*models.Transaction, error)
 }
 
-func (t transactionsService) CreateTransactions(paymentRequest models.PaymentRequest) (*models.Transaction, error) {
+func (t transactionsService) CreateTransactions(paymentRequest models.PaymentRequest, user models.User) (*models.Transaction, error) {
 	// Calculate escrow fee
 	escrowFee := (escrowFeePercentage * paymentRequest.Amount) / 100
 
@@ -41,9 +41,9 @@ func (t transactionsService) CreateTransactions(paymentRequest models.PaymentReq
 	// Create a customer
 	customer := &paystack.Customer{
 		Email:     paymentRequest.CustomerEmail,
-		FirstName: "DefaultFirst",
-		LastName:  "DefaultLast",
-		Phone:     "+23400000000000000",
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Phone:     user.Phone,
 	}
 	customer, err := client.Customer.Create(customer)
 	if err != nil {
