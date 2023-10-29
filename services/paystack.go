@@ -4,10 +4,6 @@ import (
 	"escrolla-api/config"
 	"escrolla-api/db"
 	"escrolla-api/models"
-	"fmt"
-	"github.com/rpip/paystack-go"
-	gologger "log"
-	"net/http"
 )
 
 var apiKey = "sk_test_04f212ad5ac8b0674ac970eb31fa2cd9473b3105"
@@ -27,10 +23,33 @@ func NewTransactionsService(transactionsRepo db.TransactionsRepo, conf *config.C
 }
 
 type TransactionsService interface {
-	CreateTransactions(paymentRequest models.PaymentRequest, user models.User) (*models.Transaction, error)
+	CreateOrder(paymentRequest models.Order, user models.User) (*models.Order, error)
 }
 
-func (t transactionsService) CreateTransactions(paymentRequest models.PaymentRequest, user models.User) (*models.Transaction, error) {
+func (t transactionsService) CreateOrder(orderRequest models.Order, user models.User) (*models.Order, error) {
+	// Store order information in the database
+	order := models.Order{
+		BuyerPhone:    orderRequest.BuyerPhone,
+		SellerPhone:   orderRequest.SellerPhone,
+		BuyerEmail:    orderRequest.BuyerEmail,
+		SellerEmail:   orderRequest.SellerEmail,
+		Amount:        orderRequest.Amount,
+		Description:   orderRequest.Description,
+		DeliveryDays:  orderRequest.DeliveryDays,
+		UserType:      orderRequest.UserType,
+		OrderStatus:   models.Pending,
+		PaymentStatus: models.Pending,
+		EscrowFee:     orderRequest.EscrowFee,
+		UserID:        user.ID,
+	}
+	orderCreated, err := t.transactionsRepo.CreateOrder(&order)
+	if err != nil {
+		return nil, err
+	}
+	return orderCreated, nil
+}
+
+/*
 	// Calculate escrow fee
 	escrowFee := (escrowFeePercentage * paymentRequest.Amount) / 100
 
@@ -80,26 +99,4 @@ func (t transactionsService) CreateTransactions(paymentRequest models.PaymentReq
 		return nil, fmt.Errorf("an error occured")
 	}
 
-	// Store transaction information in the database
-	transaction := models.Transaction{
-		Amount:                  paymentRequest.Amount,
-		CustomerEmail:           paymentRequest.CustomerEmail,
-		FreelancerName:          paymentRequest.FreelancerName,
-		FreelancerAccountNumber: paymentRequest.FreelancerAccountNumber,
-		RecipientCode:           recipient.RecipientCode,
-		Integration:             transactionInfo.Integration,
-		Source:                  transactionInfo.Source,
-		AmountFromPaystack:      transactionInfo.Amount,
-		Currency:                transactionInfo.Currency,
-		Reason:                  transactionInfo.Reason,
-		TransferCode:            transactionInfo.TransferCode,
-		Status:                  transactionInfo.Status,
-		TransferredAt:           transactionInfo.TransferredAt,
-		TitanCode:               transactionInfo.TitanCode,
-	}
-	transactn, err := t.transactionsRepo.CreateTransactions(&transaction)
-	if err != nil {
-		return nil, err
-	}
-	return transactn, nil
-}
+*/

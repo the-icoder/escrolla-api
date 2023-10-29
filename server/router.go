@@ -20,6 +20,8 @@ func (s *Server) defineRoutes(router *gin.Engine) {
 	apirouter.GET("/fb/auth", s.handleFBLogin())
 
 	apirouter.GET("/google/login", s.HandleGoogleOauthLogin())
+	apirouter.POST("/verify", s.VerifyPayment)
+	apirouter.POST("/create-order", s.CreateOrderAndPay())
 
 	apirouter.GET("/verifyEmail/:token", s.HandleVerifyEmail())
 	apirouter.POST("/password/forgot", s.SendEmailForPasswordReset())
@@ -32,7 +34,6 @@ func (s *Server) defineRoutes(router *gin.Engine) {
 	authorized.DELETE("/users", s.handleDeleteUserByEmail())
 	authorized.PUT("/me/update", s.handleUpdateUserDetails())
 	authorized.GET("/me", s.handleShowProfile())
-	authorized.POST("/receive-payment", s.Paystack())
 
 }
 
