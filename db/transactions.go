@@ -18,6 +18,7 @@ func NewTransactions(db *GormDB) TransactionsRepo {
 type TransactionsRepo interface {
 	CreateOrder(order *models.Order) (*models.Order, error)
 	UpdateOrderStatus(reference string, newStatus string) error
+	GetOrderByUserID(userID string) ([]models.Order, error)
 }
 
 func (t *transactions) CreateOrder(order *models.Order) (*models.Order, error) {
@@ -49,4 +50,15 @@ func (t *transactions) UpdateOrderStatus(reference string, newStatus string) err
 	}
 
 	return nil
+}
+
+func (t *transactions) GetOrderByUserID(userID string) ([]models.Order, error) {
+	var orders []models.Order
+
+	// Find orders where the buyer or seller ID matches the specified userID
+	if err := t.DB.Where("user_id = ?", userID, userID).Find(&orders).Error; err != nil {
+		return nil, err
+	}
+
+	return orders, nil
 }

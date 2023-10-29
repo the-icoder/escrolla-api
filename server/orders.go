@@ -3,6 +3,7 @@ package server
 import (
 	"bytes"
 	"encoding/json"
+	"escrolla-api/errors"
 	"escrolla-api/models"
 	"escrolla-api/server/response"
 	"fmt"
@@ -176,4 +177,21 @@ type PaystackResponse struct {
 		Status           string `json:"status"`
 	} `json:"data"`
 	Message string `json:"message"`
+}
+
+func (s *Server) GetOrderByUserID() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		//_, user, err := GetValuesFromContext(c)
+		//if err != nil {
+		//	err.Respond(c)
+		//	return
+		//}
+		//
+		orders, err := s.TransactionsRepo.GetOrderByUserID("1")
+		if err != nil {
+			response.JSON(c, "", http.StatusInternalServerError, nil, errors.New("internal server error", http.StatusInternalServerError))
+			return
+		}
+		response.JSON(c, "retrieved orders successfully", http.StatusOK, gin.H{"orders": orders}, nil)
+	}
 }
