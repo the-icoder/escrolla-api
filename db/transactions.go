@@ -56,7 +56,7 @@ func (t *transactions) GetOrderByUserID(userID string) ([]models.Order, error) {
 	var orders []models.Order
 
 	// Find orders where the buyer or seller ID matches the specified userID
-	if err := t.DB.Where("user_id = ?", userID, userID).Find(&orders).Error; err != nil {
+	if err := t.DB.Where("user_id = ?", userID).Find(&orders).Error; err != nil {
 		return nil, err
 	}
 

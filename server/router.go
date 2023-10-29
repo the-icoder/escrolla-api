@@ -22,7 +22,7 @@ func (s *Server) defineRoutes(router *gin.Engine) {
 	apirouter.GET("/google/login", s.HandleGoogleOauthLogin())
 	apirouter.POST("/verify", s.VerifyPayment)
 	apirouter.POST("/create-order", s.CreateOrderAndPay())
-	apirouter.POST("/create-order", s.GetOrderByUserID())
+	apirouter.GET("/orders", s.GetOrderByUserID())
 
 	apirouter.GET("/verifyEmail/:token", s.HandleVerifyEmail())
 	apirouter.POST("/password/forgot", s.SendEmailForPasswordReset())
