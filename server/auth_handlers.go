@@ -55,6 +55,7 @@ func (s *Server) handleLogin() gin.HandlerFunc {
 			response.JSON(c, "", err.Status, nil, err)
 			return
 		}
+		log.Println("check data: ", userResponse)
 		response.JSON(c, "login successful", http.StatusOK, userResponse, nil)
 	}
 }
