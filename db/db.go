@@ -35,12 +35,13 @@ func getPostgresDB(c *config.Config) *gorm.DB {
 	log.Printf("Connecting to postgres: %+v", c)
 	//postgresDSN := "postgres://postgres:toluwase@localhost:5432/dbname?sslmode=disable"
 
-	//postgresDSN := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d TimeZone=Africa/Lagos",
-	//	c.PostgresHost, c.PostgresUser, c.PostgresPassword, c.PostgresDB, c.PostgresPort)
+	postgresDSN := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d TimeZone=Africa/Lagos",
+		c.PostgresHost, c.PostgresUser, c.PostgresPassword, c.PostgresDB, c.PostgresPort)
 
 	log.Printf("Connecting to postgres")
-	postgresDSN := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d",
-		"localhost", "postgres", "toluwase", "escrolla", 5432) //, sslmode)
+	//log.Printf("Connecting to postgres", c.PostgresHost, c.PostgresUser, c.PostgresDB, c.PostgresPort)
+	postgresDSN = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d",
+		"localhost", c.PostgresUser, c.PostgresPassword, "escrolla", 5432) //, sslmode)
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 		logger.Config{
