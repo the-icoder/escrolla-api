@@ -79,7 +79,7 @@ func (a *authService) SignupUser(user *models.User) (*models.User, *apiError.Err
 	}()
 
 	user.Password = ""
-	user.EmailConfirmed = false
+	user.EmailConfirmed = true
 	user, err = a.authRepo.CreateUser(user)
 
 	if err != nil {
